@@ -8,34 +8,38 @@
 bool gCanAskForData = false;
 bool gMeshFinished = false;
 bool gCheckNotesState = false;
+bool gGetStartNewMeshAck = false;
 
 node_t node[NODE_ID_NUM_MAX]; //! note: the node[0] store the master's own info.
 
-
+itsbm_mode_t gMode = ITS_MODE_UNINIT;
 
 int main(void)
 {	
-	itsm_mode_t mode = ITS_MODE_UNINIT;
-	
 	boardInit();
-	
 	
     while(1) 
 	{	
 		taskParseRadioData();
 		
-		switch(mode)
+		switch(gMode)
 		{
 		case ITS_MODE_UNINIT:
 		case ITS_MODE_IDLE:
-			mode = ITS_MODE_MESH;
+			gMode = ITS_MODE_START_MESH;
+			break;
+		
+		case ITS_MODE_START_MESH:
+			startNewMesh();
+			gMode = ITS_MODE_MESH;
 			break;
 		
 		case ITS_MODE_MESH:
-			msg_start_mesh_send();
-			
-			if (gMeshFinished == true) {
-				mode = ITS_MODE_NORMAL;		
+			if (gGetStartNewMeshAck == false) {	//! if not received ask for id msg?
+				gMode = ITS_MODE_START_MESH;
+				
+			} else if (gMeshFinished == true) {
+				gMode = ITS_MODE_NORMAL;		
 			}	
 			break;
 		
@@ -44,8 +48,10 @@ int main(void)
 			askForDataPeriod();		
 			break;
 		
-		case ITS_MODE_NONE:
-			
+		case ITS_MODE_SELF_CHECK:
+			break;
+		
+		case ITS_MODE_NONE:	
 			break;
 			
 		}
@@ -114,9 +120,8 @@ void askForDataPeriod(void)
 		if (node_cycle > NODE_ID_NUM_MAX) {
 			node_cycle = 1;
 		}
-		msg_ask_for_data_send(node_cycle); printf("i am asking for data from node %d", node_cycle);	
+		msg_ask_for_data_send(node_cycle); printf(" getting data node %d", node_cycle);	
 		node_cycle++;
-
 		
 	} else if (flag != gCanAskForData) {
 		flag = gCanAskForData;
@@ -129,6 +134,11 @@ void askForDataPeriod(void)
 
 
 
+void startNewMesh(void)
+{
+	msg_start_mesh_send();	//! what should do if the slavers miss this msg?
+	delayMs(100);
+}
 
 
 

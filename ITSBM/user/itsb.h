@@ -11,7 +11,7 @@
 #define TRAVERSE_PERIOD   	200 //! ask for data per 200ms
 #define MESH_TIME_MAX		5	//! if can't receive ask for id msg more than 5 seconds, then suppose mesh finished!  
 
-
+extern bool gGetStartNewMeshAck;
 extern bool gMeshFinished;
 extern bool gCheckNotesState;
 extern bool gCanAskForData;
@@ -37,7 +37,7 @@ uint32_t readFlashBtyes(uint32_t readAddr, uint8_t *readBuf, uint32_t n);
 
 void checkNodesStatePeriod(void);
 void askForDataPeriod(void);
-
+void startNewMesh(void);
 void taskParseRadioData(void);
 
 
@@ -50,14 +50,6 @@ void taskParseRadioData(void);
 
 
 
-
-typedef enum {
-	ITS_MODE_UNINIT = 0,
-	ITS_MODE_IDLE,
-	ITS_MODE_MESH,
-	ITS_MODE_NORMAL,
-	ITS_MODE_NONE	
-} itsm_mode_t; //! the ITS master work mode
 
 
 

@@ -114,7 +114,7 @@ void timer2_1000ms_callback(void)
 	if (temp_5000ms++ > MESH_TIME_MAX) {
 		temp_5000ms = 0;
 		
-		gMeshFinished = true;
+		gMeshFinished = true; //! a bug!!!! temp_5000ms should reset to 0 when start a new mesh try!!!
 	}
 	
 				

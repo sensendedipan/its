@@ -385,6 +385,7 @@ static void handle_msg_ask_for_id(const message_t *msg)
 	msg_ask_for_id_t message;
 	memcpy(&message, &msg->payload[0], sizeof(message));
 	
+	gGetStartNewMeshAck = true;
 	gMeshFinished = false; //! there still some nodes want to join into the net, mesh not finished 
 	
 	//! traverse the entire array which saves all the nodes. i prefer to traverse mac first, if this mac has been existed, then assign the corresponding id to the node 

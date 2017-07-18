@@ -4,7 +4,7 @@
 
 
 node_t myNode;
-itss_mode_t mode = ITS_MODE_UNINIT;
+
 
 
 
@@ -13,46 +13,56 @@ bool gNetworkRunning = false;			//! the system is in running mode, if i want to 
 bool gCanAskForIdTriger = false;		//! if ask for id, should under own radio period
 bool gCanAskForIdDurNormMode = false;	//! 
 
+itsbs_mode_t gMode = ITS_MODE_UNINIT;
 
 int main(void)
-{	
+{
+
 	boardInit();
 	
 
     while(1) 
 	{	
-	
 		taskParseRadioData();	 		
 		
-		switch(mode)
+		switch(gMode)
 		{
 		case ITS_MODE_UNINIT:
 		case ITS_MODE_IDLE:
-			mode = ITS_MODE_GET_RADIO_PERIOD;
+			gMode = ITS_MODE_GET_PERIOD;
 			break;
 		
-		case ITS_MODE_GET_RADIO_PERIOD:
+		case ITS_MODE_GET_PERIOD:
 			timer3Init(getAskForIdPeriod()*50);
-			mode = ITS_MODE_MESH;
+			gMode = ITS_MODE_MESH;
 			break;
 		
 		case ITS_MODE_MESH:
-			taskMesh();
+			gMode = taskMesh();
 			break;
 		
 		case ITS_MODE_NORMAL:
 			taskNormalMission();
 		
 			if (myNode.node_id == 0) {
-				mode = ITS_MODE_MESH; //! master start a new mesh, should start go to apply for id
+				gMode = ITS_MODE_MESH; //! master start a new mesh, should start go to apply for id 
+				gComeBackToMesh = false;
+				
+			} else if (myNode.bad_cnt > myNode.cfdt) { //! communication is bad ! run selfcheck !
+				
+				//gMode = ITS_MODE_SELF_CHECK;
+				printf("i am running selfcheck! \n");
 			}
-
 			break;
 
+		case ITS_MODE_SELF_CHECK:
+			 //! run selfcheck!
+			break;
+		
 		case ITS_MODE_NONE:
 			ledFlashSet(0, 2000, 1000); //! i am rejected!
 			if (gComeBackToMesh) {		//! it can come out of the NONE mode and start apply for id again
-				mode = ITS_MODE_MESH;
+				gMode = ITS_MODE_MESH;
 				gComeBackToMesh = false;
 			}
 			break;
@@ -81,9 +91,10 @@ void taskParseRadioData(void)
 
 
 
-void taskMesh(void)
+itsbs_mode_t taskMesh(void)
 {
 	static uint8_t askForIdCnt = 0;
+	static itsbs_mode_t mode = ITS_MODE_MESH;
 	
 	if (gCanAskForIdTriger) {
 		gCanAskForIdTriger = false;
@@ -101,28 +112,40 @@ void taskMesh(void)
 				askForIdCnt++; printf("mesh mode: ask for id times: %d \n", askForIdCnt);
 			}
 			
-		} else if (myNode.node_id == 255) { //! rejected my mesh request!!!
-			mode = ITS_MODE_NONE;
-			askForIdCnt = 0;
-			printf("i am rejected ! \n");	
+			if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, modify send period as 500ms
+				timer3Init(500);
+			}
 			
-		} else {
-			printf("my_id = %d \n", myNode.node_id);
+		} else if (myNode.node_id == 255) { //! rejected my mesh request!!!
+			askForIdCnt = 0;
+			timer3Init(getAskForIdPeriod()*50);	//! just case of had modified the period
+			mode = ITS_MODE_NONE;
+			printf("i am ok but rejected ! \n");	
+			
+		} else { //! get the id succeed !
+			askForIdCnt = 0;
+			timer3Init(getAskForIdPeriod()*50); //! just case of had modified the period
 			mode = ITS_MODE_NORMAL;
+			printf("i get my id = %d \n", myNode.node_id);			
 		}
-	}				
+	}
+
+	return mode;
 }
 
 
 
 void taskNormalMission(void)
 {
-	if (myNode.bad_cnt > myNode.cfdt) { //! communication is bad ! run selfcheck !
-		
-		//! run selfcheck!
-		printf("i am running selfcheck! \n");
-	}
+
 	
 }
 
 
+
+
+void taskSelfCheck(void)
+{
+	
+	
+}

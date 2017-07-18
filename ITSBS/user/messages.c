@@ -351,9 +351,9 @@ static void handle_msg_ask_for_data(const message_t *msg)
 		return;	//! there must be something wrong with master, just give no ack
 	}
 	gNetworkRunning = true;	//! means the net is in running mode 
-	myNode.bad_cnt = 0;     //! can receive this msg means communication is OK!
-	
+
 	if (message.node_id == myNode.node_id) {
+		myNode.bad_cnt = 0;     //! can receive this msg means communication is OK!		
 		msg_ack_for_data_send(myNode.node_id, 33, 44, 55); 
 		ledFlashSet(1, 20, 5);
 	}		
@@ -391,14 +391,20 @@ static void handle_msg_ack_for_data(const message_t *msg)
 //! slaver -> master
 static void handle_msg_ask_for_id(const message_t *msg)
 {
-	return;
+	if (myNode.bad_cnt != 0) {	//! my communication is bad(normal mode), and find out that other nodes are meshing, turn to mesh 
+		gComeBackToMesh = true;	
+		myNode.node_id = 0;			//! start to mesh again
+	}
 }
 
 
 //! slaver -> master
 static void handle_msg_ack_for_id(const message_t *msg)
 {
-	return;	
+	if (myNode.bad_cnt != 0) {	//! my communication is bad(normal mode), and find out that other nodes are meshing, turn to mesh 
+		gComeBackToMesh = true;	
+		myNode.node_id = 0;			//! start to mesh again
+	}	
 }
 
 

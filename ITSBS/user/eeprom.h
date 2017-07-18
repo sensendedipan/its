@@ -36,4 +36,15 @@ typedef struct __node
 
 
 
+typedef enum {
+    ITS_MODE_UNINIT = 0,
+    ITS_MODE_IDLE,
+	ITS_MODE_GET_PERIOD,
+	ITS_MODE_MESH,
+	ITS_MODE_NORMAL,
+	ITS_MODE_SELF_CHECK,
+	ITS_MODE_NONE
+} itsbs_mode_t; //! The ITS slaver work mode
+
+
 #endif

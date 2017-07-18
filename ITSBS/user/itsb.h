@@ -6,6 +6,8 @@
 #include "board.h"
 #include "eeprom.h"
 
+#define ASK_FOR_ID_RETRY_MAX	5	//! if ask for id more than 5 times, then modify send period
+
 extern node_t myNode;
 
 
@@ -32,7 +34,8 @@ uint32_t readFlashBtyes(uint32_t readAddr, uint8_t *readBuf, uint32_t n);
 
 void taskParseRadioData(void);
 void taskNormalMission(void);
-void taskMesh(void);
+itsbs_mode_t taskMesh(void);
+void taskSelfCheck(void);
 
 
 
@@ -67,14 +70,6 @@ void taskMesh(void);
 
 
 
-typedef enum {
-    ITS_MODE_UNINIT = 0,
-    ITS_MODE_IDLE,
-	ITS_MODE_GET_RADIO_PERIOD,
-	ITS_MODE_MESH,
-	ITS_MODE_NORMAL,
-	ITS_MODE_NONE
-} itss_mode_t; //! The ITS slaver work mode
 
 
 
