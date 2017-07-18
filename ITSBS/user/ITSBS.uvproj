@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>ITSS</TargetName>
+      <TargetName>ITSBS</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <TargetOption>

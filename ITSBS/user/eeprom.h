@@ -28,6 +28,7 @@ typedef struct __node
 	uint16_t yellow_i;
 	uint16_t green_u;
 	uint16_t green_i;
+	uint32_t run_time;
 	uint32_t mac[3];
 } node_t;
 

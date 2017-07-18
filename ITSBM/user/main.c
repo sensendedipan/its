@@ -3,22 +3,13 @@
 #include "itsb.h"
 #include "global.h"
 
-uint32_t myMac[3];
-uint8_t  node_current;
-uint8_t  node_cycle = 1;
-uint16_t g_id_request;
-bool g_flag_ask_for_data = false;
-bool g_flag_check_nodes = false;
-
-node_t node[NODE_ID_NUM_MAX];
-
-uint8_t g_test;
 
 
+bool gCanAskForData = false;
+bool gMeshFinished = false;
+bool gCheckNotesState = false;
 
-
-
-
+node_t node[NODE_ID_NUM_MAX]; //! note: the node[0] store the master's own info.
 
 
 
@@ -28,21 +19,10 @@ int main(void)
 	
 	boardInit();
 	
-	while (!getCpuId(&myMac[0], &myMac[1], &myMac[2])) {
-		ledFlashSet(1, 1000, 10);
-	}
-	
-    ledFlashSet(1, 1000, 10);
-		
-	
-	
 	
     while(1) 
 	{	
-		
 		taskParseRadioData();
-		
-		checkNodesState(g_flag_check_nodes);
 		
 		switch(mode)
 		{
@@ -53,29 +33,20 @@ int main(void)
 		
 		case ITS_MODE_MESH:
 			msg_start_mesh_send();
-			mode = ITS_MODE_NORMAL;			
+			
+			if (gMeshFinished == true) {
+				mode = ITS_MODE_NORMAL;		
+			}	
 			break;
 		
 		case ITS_MODE_NORMAL:
-			
+			checkNodesStatePeriod();
+			askForDataPeriod();		
 			break;
 		
 		case ITS_MODE_NONE:
 			
 			break;
-			
-		}
-		
-		if (g_id_request >= 40) {
-			if (g_flag_ask_for_data) {
-				g_flag_ask_for_data = false;
-				
-				if (node_cycle > NODE_ID_NUM_MAX) {
-					node_cycle = 1;
-				}
-				msg_ask_for_data_send(node_cycle);	
-				node_cycle++;				
-			}			
 			
 		}
 		 
@@ -94,8 +65,8 @@ void taskParseRadioData(void)
 	
 	while (fifoGetBufDataCount()) {
 		fifoPopBuf(&data, 1);
-		if
-			(msg_parse_char(&msg, data)) {
+		
+		if (msg_parse_char(&msg, data)) {
 			handleMessage(&msg);
 		}
 	}	
@@ -103,13 +74,13 @@ void taskParseRadioData(void)
 }
 
 
-
-void checkNodesState(bool flag)
+//! twice of askForDataPeriod() in running frequency(rate)
+void checkNodesStatePeriod(void) 
 {
-	static bool temp;
+	static bool flag;
 	uint8_t i;
 	
-	if (flag != temp) {
+	if (flag != gCheckNotesState) {
 		for (i = 1; i <= NODE_ID_NUM_MAX; i++) { //! check all the nodes 
 			if (node[i].bad_cnt >= NODE_BAD_CNT_MAX) {
 				node[i].id = 0;
@@ -125,16 +96,36 @@ void checkNodesState(bool flag)
 			}
 		
 		}
-		temp = flag;		
+		flag = gCheckNotesState;		
 	}		
 	
 }
 
 
 
+void askForDataPeriod(void)
+{
+	static bool flag;
+	static uint8_t node_cycle = 1;
+	
+	if ((gCanAskForData)&&(flag != gCanAskForData)) {
+		flag = gCanAskForData;
+		
+		if (node_cycle > NODE_ID_NUM_MAX) {
+			node_cycle = 1;
+		}
+		msg_ask_for_data_send(node_cycle); printf("i am asking for data from node %d", node_cycle);	
+		node_cycle++;
 
+		
+	} else if (flag != gCanAskForData) {
+		flag = gCanAskForData;
+	
+	} else {
 
-
+	}		
+		
+}
 
 
 

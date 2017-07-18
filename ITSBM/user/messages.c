@@ -5,6 +5,7 @@
 
 #include "messages.h"
 #include "global.h"
+#include "itsb.h"
 
 
 
@@ -317,7 +318,6 @@ void handleMessage(message_t *msg)
 		break;	
 	
 	case MSG_ID_ASK_FOR_ID:
-		g_id_request = 0;
 		handle_msg_ask_for_id(msg);
 		break;	
 
@@ -385,6 +385,8 @@ static void handle_msg_ask_for_id(const message_t *msg)
 	msg_ask_for_id_t message;
 	memcpy(&message, &msg->payload[0], sizeof(message));
 	
+	gMeshFinished = false; //! there still some nodes want to join into the net, mesh not finished 
+	
 	//! traverse the entire array which saves all the nodes. i prefer to traverse mac first, if this mac has been existed, then assign the corresponding id to the node 
 	//! if can not find this mac, then traverse the id from 1 to max, assign the seq as id till the corresponding id is zero.
 	for (i = 1; i <= NODE_ID_NUM_MAX; i++) {
@@ -410,7 +412,7 @@ static void handle_msg_ask_for_id(const message_t *msg)
 				node[i].mac[1] = message.mac[1];
 				node[i].mac[2] = message.mac[2];
 				
-				msg_assign_id_send(i, message.mac[0], message.mac[1], message.mac[2], NODE_BAD_CNT_MAX);
+				msg_assign_id_send(i, message.mac[0], message.mac[1], message.mac[2], NODE_BAD_CNT_MAX * NODE_ID_NUM_MAX * TRAVERSE_PERIOD /1000);
 				break; //! must quit out otherwise will assign all the idle nodes
 		
 			} else if (i == NODE_ID_NUM_MAX) { //! it means the active nodes up to MAX, then reject this node mesh

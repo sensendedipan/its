@@ -155,7 +155,7 @@ void usart2SendBuffer(uint8_t *buffer, uint16_t count);
 /****************************************************************/
 //! timer2
 void timer2Init(uint16_t ms);
-
+void timer2_1000ms_callback(void);
 
 
 /****************************************************************/

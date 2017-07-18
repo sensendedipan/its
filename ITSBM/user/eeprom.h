@@ -21,6 +21,7 @@ typedef struct __node
 	uint8_t  dev_type;
 	uint8_t  fault_type;
 	uint8_t  fault_scale;
+	uint32_t run_time;
 	uint16_t red_u;
 	uint16_t red_i;
 	uint16_t yellow_u;

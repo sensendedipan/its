@@ -7,9 +7,9 @@
 
 uint16_t g_500ms = 0;
 
-#define DATA_POLL_FREQ   10 //! the frequence that master ask for data
 
 
+ 
 
 /**
   * @brief  board init
@@ -32,8 +32,14 @@ void boardInit(void)
 	usart1Init(57600);
 
 	timer2Init(1);
-	timer3Init(1000/DATA_POLL_FREQ);		
+	timer3Init(TRAVERSE_PERIOD/2);		
 	wdgInit();
+	
+	while (!getCpuId(&node[0].mac[0], &node[0].mac[1], &node[0].mac[2])) {
+		ledFlashSet(1, 1000, 10);
+	}
+	
+    ledFlashSet(1, 1000, 10);
 }
 
 

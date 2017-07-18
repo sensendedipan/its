@@ -4,6 +4,8 @@
 #include "board.h"
 
 
+static uint32_t timer2_1000ms = 0;
+
 /**
   * @brief  init timer2  
   * @note   
@@ -72,12 +74,20 @@ void timer3Init(uint16_t ms)
 
 void TIMER2_TIMER_IRQHandler()
 {
-	wdgFeed();
-	ledFlashLoop();
+
 	
 	if (TIM_GetITStatus(TIMER2_TIMER, TIM_IT_Update) != RESET) {   
 		TIM_ClearITPendingBit(TIMER2_TIMER, TIM_IT_Update);
 
+		wdgFeed();
+		ledFlashLoop();		
+		
+		if (timer2_1000ms++ > 1000) {
+			timer2_1000ms = 0;
+			
+			timer2_1000ms_callback();
+
+		}
 	}
 
 }
@@ -88,21 +98,27 @@ void TIMER3_TIMER_IRQHandler()
 {
 	if (TIM_GetITStatus(TIMER3_TIMER, TIM_IT_Update) != RESET) {   
 		TIM_ClearITPendingBit(TIMER3_TIMER, TIM_IT_Update);
-		g_flag_ask_for_data = true;
 		
-		g_test++;
-		
-		g_flag_check_nodes = (g_test%3 == 0) ? true : false;
-		
-		if (g_id_request < 40) {
-			g_id_request++;
-		}
+		gCanAskForData = !gCanAskForData;				
+		gCheckNotesState = !gCheckNotesState;
+
 	}
 }
 
 
 
-
+void timer2_1000ms_callback(void)
+{
+	static uint8_t temp_5000ms;
+	
+	if (temp_5000ms++ > MESH_TIME_MAX) {
+		temp_5000ms = 0;
+		
+		gMeshFinished = true;
+	}
+	
+				
+}
 
 
 
