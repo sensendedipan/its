@@ -347,6 +347,9 @@ static void handle_msg_ask_for_data(const message_t *msg)
 	msg_ask_for_data_t message;
 	memcpy(&message, &msg->payload[0], sizeof(message));
 	
+	if (message.node_id == 0) {
+		return;	//! there must be something wrong with master, just give no ack
+	}
 	gNetworkRunning = true;	//! means the net is in running mode 
 	myNode.bad_cnt = 0;     //! can receive this msg means communication is OK!
 	
