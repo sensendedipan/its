@@ -8,9 +8,9 @@ itss_mode_t mode = ITS_MODE_UNINIT;
 
 
 
-bool gComeBackToMesh = false;		//! if rejected while apply for id, then go to NONE mode, and if the master start a new mesh again, then can come out of NONE mode to apply for id 
-bool gNetworkRunning = false;		//! the system is in running mode, if i want to ask for id, should send msg in free time  
-bool gCanAskForIdTriger = false;	//! if ask for id, should under own radio period
+bool gComeBackToMesh = false;			//! if rejected while apply for id, then go to NONE mode, and if the master start a new mesh again, then can come out of NONE mode to apply for id 
+bool gNetworkRunning = false;			//! the system is in running mode, if i want to ask for id, should send msg in free time  
+bool gCanAskForIdTriger = false;		//! if ask for id, should under own radio period
 bool gCanAskForIdDurNormMode = false;	//! 
 
 
