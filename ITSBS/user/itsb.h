@@ -31,9 +31,9 @@ uint32_t readFlashBtyes(uint32_t readAddr, uint8_t *readBuf, uint32_t n);
 
 
 void taskParseRadioData(void);
-void taskNormalMission(void);
+itsbs_mode_t taskNormalMission(void);
 itsbs_mode_t taskMesh(void);
-void taskSelfCheck(void);
+itsbs_mode_t taskSelfCheck(void);
 
 
 

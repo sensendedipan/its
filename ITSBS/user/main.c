@@ -39,17 +39,8 @@ int main(void)
 			gMode = taskMesh();
 			break;
 		
-		case ITS_MODE_NORMAL:
-			taskNormalMission();
-		
-			if (myNode.node_id == 0) {
-				gMode = ITS_MODE_MESH; //! master start a new mesh, should start go to apply for id 
-				
-			} else if (myNode.bad_cnt > myNode.cfdt) { //! communication is bad ! run selfcheck !
-				
-				//gMode = ITS_MODE_SELF_CHECK;
-				printf("i am running selfcheck! \n");
-			}
+		case ITS_MODE_NORMAL_MISSION:
+			gMode = taskNormalMission();
 			break;
 
 		case ITS_MODE_SELF_CHECK:
@@ -90,7 +81,7 @@ void taskParseRadioData(void)
 itsbs_mode_t taskMesh(void)
 {
 	static uint8_t askForIdCnt = 0;
-	static itsbs_mode_t mode = ITS_MODE_MESH;
+	itsbs_mode_t mode = ITS_MODE_MESH;
 	
 	if (gCanAskForIdTriger) {
 		gCanAskForIdTriger = false;
@@ -122,7 +113,7 @@ itsbs_mode_t taskMesh(void)
 			askForIdCnt = 0;
 			myNode.bad_cnt = 0;
 			timer3Init(getAskForIdPeriod()*50); //! just case of had modified the period
-			mode = ITS_MODE_NORMAL;
+			mode = ITS_MODE_NORMAL_MISSION;
 			printf("i get my id = %d \n", myNode.node_id);			
 		}
 	}
@@ -132,17 +123,33 @@ itsbs_mode_t taskMesh(void)
 
 
 
-void taskNormalMission(void)
+itsbs_mode_t taskNormalMission(void)
 {
-
+	itsbs_mode_t mode = ITS_MODE_NORMAL_MISSION;
 	
+	//! to do normal mission
+	
+	
+	
+	if (myNode.node_id == 0) {	//! master start a new mesh, should apply for a new id 
+		mode = ITS_MODE_MESH; 
+
+	} else if (myNode.bad_cnt > myNode.cfdt) { //! communication is bad ! run selfcheck !
+
+		//mode = ITS_MODE_SELF_CHECK;
+		printf("i am running selfcheck! \n");
+	}
+	
+	return mode;
 }
 
 
 
 
-void taskSelfCheck(void)
+itsbs_mode_t taskSelfCheck(void)
 {
+	itsbs_mode_t mode = ITS_MODE_SELF_CHECK;
 	
+	//! to do self check!
 	
 }
