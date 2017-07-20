@@ -113,7 +113,7 @@ itsbs_mode_t taskMesh(void)
 			}
 			
 			if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, modify send period as 500ms
-				timer3Init(500);
+				//timer3Init(500);
 			}
 			
 		} else if (myNode.node_id == 255) { //! rejected my mesh request!!!
