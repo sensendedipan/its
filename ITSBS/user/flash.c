@@ -34,20 +34,24 @@ bool getCpuId(uint32_t *mac_0, uint32_t *mac_1, uint32_t *mac_2)
   * @note   if get cpu id failed, use 1 as the default period
   * @retval None
   */
-uint8_t getAskForIdPeriod(void)
+uint16_t getAskForIdPeriod(void)
 {
-	uint8_t value;
+	uint16_t value;
 	uint32_t mac[3];
 	
 	if (getCpuId(&mac[0], &mac[1], &mac[2])) {
-		
 		value = (crc16((uint8_t *)mac, sizeof(mac)) & (0x000F));
 		
-		if (value == 0) value = 1;
+		if (value == 0) {
+			value = 100;
+			
+		} else {
+			value = value*50;
+		} 			
 		
 	} else {
 		
-		value = 1;
+		value = 500;
 	}
 	
 	return value;

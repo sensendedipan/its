@@ -356,7 +356,7 @@ static void handle_msg_ask_for_data(const message_t *msg)
 		myNode.bad_cnt = 0;     //! can receive this msg means communication is OK!		
 		msg_ack_for_data_send(myNode.node_id, 33, 44, 55); 
 		printf("ack for data my id : %d \n", myNode.node_id);
-		ledFlashSet(1, 20, 5);
+		ledFlashSet(1, 100, 5);
 		
 	}		
 	

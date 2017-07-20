@@ -12,7 +12,6 @@
 
 
 
-
 typedef struct __node
 {
 	uint8_t  node_id;
@@ -31,6 +30,46 @@ typedef struct __node
 	uint32_t run_time;
 	uint32_t mac[3];
 } node_t;
+
+
+
+
+
+
+
+
+
+typedef struct __can_msg_t
+{
+	uint32_t stdId;
+	uint32_t extId;
+	uint8_t  ide;
+	uint8_t  rtr;
+	uint8_t  dlc;
+	uint8_t  fmi;
+	uint8_t  data[8];
+	
+} can_msg_t;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

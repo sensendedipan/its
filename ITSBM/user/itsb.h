@@ -6,9 +6,9 @@
 #include "board.h"
 #include "eeprom.h"
 
-#define NODE_ID_NUM_MAX		20 	//! supporst up to 20 nodes
+#define NODE_ID_NUM_MAX		15 	//! supporst up to 20 nodes
 #define NODE_BAD_CNT_MAX	10  //! if ask for data without ack more than this times, then suppose this node down  
-#define TRAVERSE_PERIOD   	200 //! ask for data per 200ms
+#define TRAVERSE_PERIOD   	150 //! ask for data per 200ms
 #define MESH_TIME_MAX		5	//! if can't receive ask for id msg more than 5 seconds, then suppose mesh finished!  
 
 extern bool gGetStartNewMeshAck;
@@ -16,7 +16,7 @@ extern bool gMeshFinished;
 extern bool gCheckNotesState;
 extern bool gCanAskForDataPeriod;
 extern node_t node[NODE_ID_NUM_MAX];
-
+extern uint8_t gNoneAskForCnt;
 
 
 uint16_t crc16(uint8_t * buf, uint32_t len);

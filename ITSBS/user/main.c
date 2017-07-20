@@ -31,7 +31,7 @@ int main(void)
 			break;
 		
 		case ITS_MODE_GET_PERIOD:
-			timer3Init(getAskForIdPeriod()*50);
+			timer3Init(getAskForIdPeriod());
 			gMode = ITS_MODE_MESH;
 			break;
 		
@@ -100,19 +100,20 @@ itsbs_mode_t taskMesh(void)
 			}
 			
 			if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, modify send period as 500ms
-				//timer3Init(500);
+				delayMs((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*50);
+				timer3Init(200);
 			}
 			
 		} else if (myNode.node_id == 255) { //! rejected my mesh request!!!
 			askForIdCnt = 0;
-			timer3Init(getAskForIdPeriod()*50);	//! just case of had modified the period
+			timer3Init(getAskForIdPeriod());	//! just case of had modified the period
 			mode = ITS_MODE_NONE;
 			printf("i am ok but rejected ! \n");	
 			
 		} else { //! get the id succeed !
 			askForIdCnt = 0;
 			myNode.bad_cnt = 0;
-			timer3Init(getAskForIdPeriod()*50); //! just case of had modified the period
+			timer3Init(getAskForIdPeriod()); //! just case of had modified the period
 			mode = ITS_MODE_NORMAL_MISSION;
 			printf("i get my id = %d \n", myNode.node_id);			
 		}

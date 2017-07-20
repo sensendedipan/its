@@ -85,7 +85,9 @@ void TIMER2_TIMER_IRQHandler()
 		if (timer2_1000ms++ > 1000) {
 			timer2_1000ms = 0;
 			
-			timer2_1000ms_callback();
+			if ((gNoneAskForCnt++ > MESH_TIME_MAX) && (!gMeshFinished)) {
+				gMeshFinished = true;
+			}
 
 		}
 	}
@@ -107,18 +109,6 @@ void TIMER3_TIMER_IRQHandler()
 
 
 
-void timer2_1000ms_callback(void)
-{
-	static uint8_t temp_5000ms;
-	
-	if (temp_5000ms++ > MESH_TIME_MAX) {
-		temp_5000ms = 0;
-		
-		gMeshFinished = true; //! a bug!!!! temp_5000ms should reset to 0 when start a new mesh try!!!
-	}
-	
-				
-}
 
 
 

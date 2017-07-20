@@ -9,6 +9,7 @@ bool gCanAskForDataPeriod = false;
 bool gMeshFinished = false;
 bool gCheckNotesState = false;
 bool gGetStartNewMeshAck = false;
+uint8_t gNoneAskForCnt = 0;
 
 node_t node[NODE_ID_NUM_MAX]; //! note: the node[0] store the master's own info.
 

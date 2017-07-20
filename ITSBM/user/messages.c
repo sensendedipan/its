@@ -388,7 +388,7 @@ static void handle_msg_ask_for_id(const message_t *msg)
 	
 	gGetStartNewMeshAck = true;
 	gMeshFinished = false; //! there still some nodes want to join into the net, mesh not finished 
-	
+	gNoneAskForCnt = 0;
 	//! traverse the entire array which saves all the nodes. i prefer to traverse mac first, if this mac has been existed, then assign the corresponding id to the node 
 	//! if can not find this mac, then traverse the id from 1 to max, assign the seq as id till the corresponding id is zero.
 	for (i = 1; i <= NODE_ID_NUM_MAX; i++) {
