@@ -5,7 +5,7 @@
 
 
 
-bool gCanAskForData = false;
+bool gCanAskForDataPeriod = false;
 bool gMeshFinished = false;
 bool gCheckNotesState = false;
 bool gGetStartNewMeshAck = false;
@@ -114,8 +114,8 @@ void askForDataPeriod(void)
 	static bool flag;
 	static uint8_t node_cycle = 1;
 	
-	if ((gCanAskForData)&&(flag != gCanAskForData)) {
-		flag = gCanAskForData;
+	if ((gCanAskForDataPeriod)&&(flag != gCanAskForDataPeriod)) {
+		flag = gCanAskForDataPeriod;
 		
 		if (node_cycle > NODE_ID_NUM_MAX) {
 			node_cycle = 1;
@@ -123,8 +123,8 @@ void askForDataPeriod(void)
 		msg_ask_for_data_send(node_cycle); printf(" getting data node %d", node_cycle);	
 		node_cycle++;
 		
-	} else if (flag != gCanAskForData) {
-		flag = gCanAskForData;
+	} else if (flag != gCanAskForDataPeriod) {
+		flag = gCanAskForDataPeriod;
 	
 	} else {
 
@@ -137,7 +137,7 @@ void askForDataPeriod(void)
 void startNewMesh(void)
 {
 	msg_start_mesh_send();	//! what should do if the slavers miss this msg?
-	delayMs(100);
+	delayMs(1000);
 }
 
 

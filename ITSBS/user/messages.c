@@ -337,7 +337,7 @@ static void handle_msg_start_mesh(const message_t *msg)
 {
 	myNode.node_id = 0;			//! start to mesh again
 	gNetworkRunning = false;	//! means the net is in meshing mode
-	gComeBackToMesh = true;		//! for rejected nodes before, it can apply for id again 
+	printf("start a new mesh \n");
 }
 
 
@@ -355,7 +355,9 @@ static void handle_msg_ask_for_data(const message_t *msg)
 	if (message.node_id == myNode.node_id) {
 		myNode.bad_cnt = 0;     //! can receive this msg means communication is OK!		
 		msg_ack_for_data_send(myNode.node_id, 33, 44, 55); 
+		printf("ack for data my id : %d \n", myNode.node_id);
 		ledFlashSet(1, 20, 5);
+		
 	}		
 	
 }
@@ -369,7 +371,11 @@ static void handle_msg_assign_id(const message_t *msg)
 	memcpy(&message, &msg->payload[0], sizeof(message));	
 	
 	if ((message.mac[0] != myNode.mac[0])||(message.mac[1] != myNode.mac[1])||(message.mac[2] != myNode.mac[2])) {
-		printf("this is not my mac! \n");		
+		printf("this is not my mac! \n");
+		if (message.node_id == myNode.node_id) { //! my id is reassigned to other nodes, i have to apply for a new id 
+			myNode.node_id = 0;
+			printf("i have to re apply for my id \n");
+		}
 		
 	} else {
 		myNode.node_id	= message.node_id;
@@ -391,20 +397,14 @@ static void handle_msg_ack_for_data(const message_t *msg)
 //! slaver -> master
 static void handle_msg_ask_for_id(const message_t *msg)
 {
-	if (myNode.bad_cnt != 0) {	//! my communication is bad(normal mode), and find out that other nodes are meshing, turn to mesh 
-		gComeBackToMesh = true;	
-		myNode.node_id = 0;			//! start to mesh again
-	}
+
 }
 
 
 //! slaver -> master
 static void handle_msg_ack_for_id(const message_t *msg)
 {
-	if (myNode.bad_cnt != 0) {	//! my communication is bad(normal mode), and find out that other nodes are meshing, turn to mesh 
-		gComeBackToMesh = true;	
-		myNode.node_id = 0;			//! start to mesh again
-	}	
+	
 }
 
 

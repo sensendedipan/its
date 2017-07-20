@@ -10,8 +10,6 @@
 
 extern node_t myNode;
 
-
-extern bool gComeBackToMesh;
 extern bool gNetworkRunning;
 extern bool gCanAskForIdTriger;
 extern bool gCanAskForIdDurNormMode;

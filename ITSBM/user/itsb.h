@@ -14,7 +14,7 @@
 extern bool gGetStartNewMeshAck;
 extern bool gMeshFinished;
 extern bool gCheckNotesState;
-extern bool gCanAskForData;
+extern bool gCanAskForDataPeriod;
 extern node_t node[NODE_ID_NUM_MAX];
 
 

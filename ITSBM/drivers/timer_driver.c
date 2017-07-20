@@ -99,7 +99,7 @@ void TIMER3_TIMER_IRQHandler()
 	if (TIM_GetITStatus(TIMER3_TIMER, TIM_IT_Update) != RESET) {   
 		TIM_ClearITPendingBit(TIMER3_TIMER, TIM_IT_Update);
 		
-		gCanAskForData = !gCanAskForData;				
+		gCanAskForDataPeriod = !gCanAskForDataPeriod;				
 		gCheckNotesState = !gCheckNotesState;
 
 	}

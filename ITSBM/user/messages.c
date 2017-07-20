@@ -40,6 +40,7 @@ void msg_start_mesh_send(void)
 	msg[sizeof(msg_head)+sizeof(payload)+2] = END;
 	
 	MSG_SEND_USART_BYTES(msg, sizeof(msg));
+	printf("start mesh \n");
 }
 
 

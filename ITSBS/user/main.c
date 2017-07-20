@@ -7,8 +7,6 @@ node_t myNode;
 
 
 
-
-bool gComeBackToMesh = false;			//! if rejected while apply for id, then go to NONE mode, and if the master start a new mesh again, then can come out of NONE mode to apply for id 
 bool gNetworkRunning = false;			//! the system is in running mode, if i want to ask for id, should send msg in free time  
 bool gCanAskForIdTriger = false;		//! if ask for id, should under own radio period
 bool gCanAskForIdDurNormMode = false;	//! 
@@ -46,7 +44,6 @@ int main(void)
 		
 			if (myNode.node_id == 0) {
 				gMode = ITS_MODE_MESH; //! master start a new mesh, should start go to apply for id 
-				gComeBackToMesh = false;
 				
 			} else if (myNode.bad_cnt > myNode.cfdt) { //! communication is bad ! run selfcheck !
 				
@@ -61,9 +58,8 @@ int main(void)
 		
 		case ITS_MODE_NONE:
 			ledFlashSet(0, 2000, 1000); //! i am rejected!
-			if (gComeBackToMesh) {		//! it can come out of the NONE mode and start apply for id again
+			if (myNode.node_id == 0) {		//! it can come out of the NONE mode and start apply for id again
 				gMode = ITS_MODE_MESH;
-				gComeBackToMesh = false;
 			}
 			break;
 		}
@@ -124,6 +120,7 @@ itsbs_mode_t taskMesh(void)
 			
 		} else { //! get the id succeed !
 			askForIdCnt = 0;
+			myNode.bad_cnt = 0;
 			timer3Init(getAskForIdPeriod()*50); //! just case of had modified the period
 			mode = ITS_MODE_NORMAL;
 			printf("i get my id = %d \n", myNode.node_id);			
