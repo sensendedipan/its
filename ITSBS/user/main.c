@@ -136,7 +136,7 @@ itsbs_mode_t taskNormalMission(void)
 		mode = ITS_MODE_MESH; 
 
 	} else if (myNode.bad_cnt > myNode.cfdt) { //! communication is bad ! run selfcheck !
-
+		myNode.node_id = 0;
 		//mode = ITS_MODE_SELF_CHECK;
 		printf("i am running selfcheck! \n");
 	}

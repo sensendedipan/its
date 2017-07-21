@@ -88,7 +88,7 @@ void checkNodesStatePeriod(void)
 	uint8_t i;
 	
 	if (flag != gCheckNotesState) {
-		for (i = 1; i <= NODE_ID_NUM_MAX; i++) { //! check all the nodes 
+		for (i = 1; i < NODE_ID_NUM_MAX; i++) { //! check all the nodes 
 			if (node[i].bad_cnt >= NODE_BAD_CNT_MAX) {
 				node[i].id = 0;
 				node[i].bad_cnt	  	= 0;
@@ -100,8 +100,10 @@ void checkNodesStatePeriod(void)
 				node[i].fault_type  = 0;
 				node[i].state 	  	= NODE_STATE_OFFLINE;	
 				memset(&node[i], 0, sizeof(node_t));
+				
+			} else if (node[i].id != 0) {
+				//! printf("id: %d state: %d bad_cnt: %d mac: %X-%X-%X \n", node[i].id, node[i].state, node[i].bad_cnt, node[i].mac[0], node[i].mac[1], node[i].mac[2]);	
 			}
-		
 		}
 		flag = gCheckNotesState;		
 	}		
@@ -118,10 +120,10 @@ void askForDataPeriod(void)
 	if ((gCanAskForDataPeriod)&&(flag != gCanAskForDataPeriod)) {
 		flag = gCanAskForDataPeriod;
 		
-		if (node_cycle > NODE_ID_NUM_MAX) {
+		if (node_cycle >= NODE_ID_NUM_MAX) {
 			node_cycle = 1;
 		}
-		msg_ask_for_data_send(node_cycle); printf(" getting data node %d", node_cycle);	
+		msg_ask_for_data_send(node_cycle); 
 		node_cycle++;
 		
 	} else if (flag != gCanAskForDataPeriod) {

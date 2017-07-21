@@ -361,8 +361,9 @@ static void handle_msg_ack_for_data(const message_t *msg)
 	uint8_t i;
 	msg_ack_for_data_t message;
 	memcpy(&message, &msg->payload[0], sizeof(message));
+	printf("id = %d     ", message.node_id);
 	
-	for (i = 1; i <= NODE_ID_NUM_MAX; i++) { //! traverse the entire array which saves all the nodes 
+	for (i = 1; i < NODE_ID_NUM_MAX; i++) { //! traverse the entire array which saves all the nodes 
 		if (node[i].id == message.node_id) {
 			node[i].bad_cnt	  	= 0;         //! if the data ack ok, then the bad_cnt will be reset to 0, which means this slaver(node) is good
 			node[i].dev_type  	= message.dev_type;
@@ -370,9 +371,16 @@ static void handle_msg_ack_for_data(const message_t *msg)
 			node[i].fault_scale = message.fault_scale;
 			node[i].state 	  	= NODE_STATE_ONLINE;
 			printf("id: %d state: %d bad_cnt: %d mac: %X-%X-%X \n", node[i].id, node[i].state, node[i].bad_cnt, node[i].mac[0], node[i].mac[1], node[i].mac[2]);	
+			break;
+			
+		} else if (i == NODE_ID_NUM_MAX - 1) {
+	
+			msg_start_mesh_send();
+			printf("there is a stranger! remesh!!!\n");
 		}
-		
+					
 	}
+
 
 }
 
@@ -391,7 +399,7 @@ static void handle_msg_ask_for_id(const message_t *msg)
 	gNoneAskForCnt = 0;
 	//! traverse the entire array which saves all the nodes. i prefer to traverse mac first, if this mac has been existed, then assign the corresponding id to the node 
 	//! if can not find this mac, then traverse the id from 1 to max, assign the seq as id till the corresponding id is zero.
-	for (i = 1; i <= NODE_ID_NUM_MAX; i++) {
+	for (i = 1; i < NODE_ID_NUM_MAX; i++) {
 		if ((node[i].mac[0] == message.mac[0]) && (node[i].mac[1] == message.mac[1]) && (node[i].mac[2] == message.mac[2])) {
 			node[i].bad_cnt = 0; //! another place always check this value, if this node down less than n times, and here assign the same id again, we should reset the bad_cnt in case be reseted again 
 			need_trav_ids = false;
@@ -407,7 +415,7 @@ static void handle_msg_ask_for_id(const message_t *msg)
 	if (need_trav_ids == true) {
 		need_trav_ids = false;
 		
-		for (i = 1; i <= NODE_ID_NUM_MAX; i++) { 
+		for (i = 1; i < NODE_ID_NUM_MAX; i++) { 
 			if (node[i].id == 0) {				 
 				node[i].id     = i;
 				node[i].mac[0] = message.mac[0];
@@ -417,8 +425,11 @@ static void handle_msg_ask_for_id(const message_t *msg)
 				msg_assign_id_send(i, message.mac[0], message.mac[1], message.mac[2], NODE_BAD_CNT_MAX * NODE_ID_NUM_MAX * TRAVERSE_PERIOD /1000);
 				break; //! must quit out otherwise will assign all the idle nodes
 		
-			} else if (i == NODE_ID_NUM_MAX) { //! it means the active nodes up to MAX, then reject this node mesh
-				msg_assign_id_send(255, message.mac[0], message.mac[1], message.mac[2], NODE_BAD_CNT_MAX);
+			} else if (i == NODE_ID_NUM_MAX-1) { //! it means the active nodes up to MAX, then reject this node mesh
+				msg_assign_id_send(255, message.mac[0], message.mac[1], message.mac[2],  NODE_BAD_CNT_MAX * NODE_ID_NUM_MAX * TRAVERSE_PERIOD /1000);
+				
+			} else {
+				//! normal
 			}				
 		}
 		
