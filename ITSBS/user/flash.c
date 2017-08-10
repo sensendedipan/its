@@ -40,7 +40,7 @@ uint16_t getAskForIdPeriod(void)
 	uint32_t mac[3];
 	
 	if (getCpuId(&mac[0], &mac[1], &mac[2])) {
-		value = (crc16((uint8_t *)mac, sizeof(mac)) & (0x000F));
+		value = (crc16((uint8_t *)mac, sizeof(mac)) & (0x001F));
 		
 		if (value == 0) {
 			value = 100;
