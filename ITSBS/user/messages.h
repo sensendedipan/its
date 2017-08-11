@@ -64,9 +64,16 @@ typedef __packed struct __msg_ack_for_data_t
 	uint8_t  node_id; 
 	uint8_t  reserved_1;
 	uint8_t	 dev_type;
-	uint8_t  fault_type;
-	uint8_t  fault_scale;
-	uint32_t reserved_4;
+	uint8_t	 volt_red;
+	uint8_t  volt_yellow;
+	uint8_t  volt_green;
+	uint8_t  current_percentage_red;
+	uint8_t  current_percentage_yellow;
+	uint8_t  current_percentage_green;
+	uint16_t current_red;
+	uint16_t current_yellow;
+	uint16_t current_green;
+	uint16_t reserved_2;
 } msg_ack_for_data_t;
 
 
@@ -75,6 +82,9 @@ typedef __packed struct __msg_ask_for_id_t
 { 
 	uint8_t  node_id; 
 	uint32_t mac[3];
+	uint8_t  c_base_red;
+	uint8_t  c_base_yellow;
+	uint8_t  c_base_green;
 	uint16_t reserved;
 } msg_ask_for_id_t;
 
@@ -104,8 +114,9 @@ typedef __packed struct __msg_assign_id_t
 bool msg_parse_char(message_t *rxmsg, uint8_t c);
 void msg_start_mesh_send(void);
 void msg_ask_for_data_send(uint8_t node_id);
-void msg_ack_for_data_send(uint8_t node_id, uint8_t dev_type, uint8_t fault_type, uint8_t fault_scale);
-void msg_ask_for_id_send(uint32_t mac_0, uint32_t mac_1, uint32_t mac_2);
+void msg_ack_for_data_send(	uint8_t node_id, uint8_t dev_type, uint8_t volt_red, uint8_t volt_yellow, uint8_t volt_green, uint8_t current_percentage_red,
+							uint8_t current_percentage_yellow, uint8_t current_percentage_green, uint16_t current_red, uint16_t current_yellow, uint16_t current_green);
+void msg_ask_for_id_send(uint32_t mac_0, uint32_t mac_1, uint32_t mac_2, uint8_t c_base_red, uint8_t c_base_yellow, uint8_t c_base_green);
 void msg_assign_id_send(uint8_t node_id, uint32_t mac_0, uint32_t mac_1, uint32_t mac_2, uint8_t cfdt);
 void msg_ack_for_id_send(uint8_t node_id, uint32_t mac_0, uint32_t mac_1, uint32_t mac_2);
 void handleMessage(message_t *msg);

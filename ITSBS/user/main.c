@@ -91,11 +91,11 @@ itsbs_mode_t taskMesh(void)
 				if (gCanAskForIdDurNormMode) { //! check if it is the free time that can send ask for id msg
 					gCanAskForIdDurNormMode = false;
 					askForIdCnt++; printf("normal mode: ask for id times: %d \n", askForIdCnt);
-					msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2]);						
+					msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);						
 				}
 				
 			} else { //! network is running mesh, just send ask for id msg under my period
-				msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2]);						
+				msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);						
 				askForIdCnt++; printf("mesh mode: ask for id times: %d \n", askForIdCnt);
 			}
 			

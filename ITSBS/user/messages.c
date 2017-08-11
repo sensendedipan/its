@@ -78,11 +78,20 @@ void msg_ask_for_data_send(uint8_t node_id)
 
 /****************************************************************/
 //! msg_ack_for_data_send
-
 #define MSG_ID_ACK_FOR_DATA				0X52
-#define MSG_ACK_FOR_DATA_PAYLOAD_LEN 	9
+#define MSG_ACK_FOR_DATA_PAYLOAD_LEN 	17
 
-void msg_ack_for_data_send(uint8_t node_id, uint8_t dev_type, uint8_t fault_type, uint8_t fault_scale) 
+void msg_ack_for_data_send(	uint8_t  node_id, 
+							uint8_t	 dev_type, 
+							uint8_t	 volt_red,
+							uint8_t  volt_yellow,
+							uint8_t  volt_green,
+							uint8_t  current_percentage_red,
+							uint8_t  current_percentage_yellow,
+							uint8_t  current_percentage_green,
+							uint16_t current_red,
+							uint16_t current_yellow,
+							uint16_t current_green)
 {
 	static uint8_t msg[MSG_ACK_FOR_DATA_PAYLOAD_LEN + MSG_PAYLOAD_OFFSET];
 	static msg_head_t	       msg_head;
@@ -93,11 +102,16 @@ void msg_ack_for_data_send(uint8_t node_id, uint8_t dev_type, uint8_t fault_type
 	msg_head.msg_id     = MSG_ID_ACK_FOR_DATA;
 	
 	payload.node_id     = node_id;
-	payload.reserved_1  = 55; 							//! reserved
-	payload.dev_type    = dev_type; 						//! define later just for test here
-	payload.fault_type  = fault_type; 					//! define later just for test here
-	payload.fault_scale = fault_scale;
-	payload.reserved_4  = 55; 							//! reserved
+	payload.dev_type    = dev_type; //! define later just for test here
+	payload.volt_red	= volt_red;
+	payload.volt_yellow	= volt_yellow;
+	payload.volt_green	= volt_green;
+	payload.current_percentage_red	= current_percentage_red;
+	payload.current_percentage_yellow	= current_percentage_yellow;
+	payload.current_percentage_green	= current_percentage_green;
+	payload.current_red	= current_red;
+	payload.current_yellow	= current_yellow;
+	payload.current_green	= current_green;
 	
 	memcpy(&msg, &msg_head, sizeof(msg_head));
 	memcpy(&msg[sizeof(msg_head)], &payload, sizeof(payload)); //! payload
@@ -117,9 +131,9 @@ void msg_ack_for_data_send(uint8_t node_id, uint8_t dev_type, uint8_t fault_type
 //! msg_ask_for_id_send
 
 #define MSG_ID_ASK_FOR_ID				0X53
-#define MSG_ASK_FOR_ID_PAYLOAD_LEN 		15
+#define MSG_ASK_FOR_ID_PAYLOAD_LEN 		18
 
-void msg_ask_for_id_send(uint32_t mac_0, uint32_t mac_1, uint32_t mac_2) 
+void msg_ask_for_id_send(uint32_t mac_0, uint32_t mac_1, uint32_t mac_2, uint8_t c_base_red, uint8_t c_base_yellow, uint8_t c_base_green) 
 {
 	static uint8_t msg[MSG_ASK_FOR_ID_PAYLOAD_LEN + MSG_PAYLOAD_OFFSET];
 	static msg_head_t	     msg_head;
@@ -133,6 +147,9 @@ void msg_ask_for_id_send(uint32_t mac_0, uint32_t mac_1, uint32_t mac_2)
 	payload.mac[0]	   = mac_0;
 	payload.mac[1]     = mac_1;
 	payload.mac[2]     = mac_2;
+	payload.c_base_red	   = c_base_red;
+	payload.c_base_yellow  = c_base_yellow;
+	payload.c_base_green   = c_base_green;
 	
 	memcpy(&msg, &msg_head, sizeof(msg_head));
 	memcpy(&msg[sizeof(msg_head)], &payload, sizeof(payload)); //! payload
@@ -354,9 +371,9 @@ static void handle_msg_ask_for_data(const message_t *msg)
 
 	if (message.node_id == myNode.node_id) {
 		myNode.bad_cnt = 0;     //! can receive this msg means communication is OK!		
-		msg_ack_for_data_send(myNode.node_id, 33, 44, 55); 
+		msg_ack_for_data_send(myNode.node_id, 0, 11, 22, 33, 44, 55, 66, 77, 88, 99); 
 		printf("ack for data my id : %d \n", myNode.node_id);
-		ledFlashSet(1, 100, 5);
+		ledFlashSet(1, 200, 5);
 		
 	}		
 	
