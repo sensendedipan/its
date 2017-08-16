@@ -6,8 +6,8 @@
 #include "board.h"
 #include "eeprom.h"
 
-#define ASK_FOR_ID_RETRY_MAX	20	//! if ask for id more than ASK_FOR_ID_RETRY_MAX/2 times, then modify send period; if more than ASK_FOR_ID_RETRY_MAX times, selfcheck or reboot
-
+#define ASK_FOR_ID_RETRY_MAX	20	//! if ask for id more than ASK_FOR_ID_RETRY_MAX times, then modify send period; 
+#define ASK_FOR_ID_RETRY_REBOOT	50	//! if ask for id more than ASK_FOR_ID_RETRY_REBOOT times, then reboot
 extern node_t myNode;
 
 extern bool gNetworkRunning;
