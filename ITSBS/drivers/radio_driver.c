@@ -10,7 +10,7 @@
   * @note   
   * @retval None
   */
-void radioInit(void) 
+static void radioGpioInit(void) 
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
@@ -28,9 +28,6 @@ void radioInit(void)
 	
 	GPIO_InitStructure.GPIO_Pin	= RADIO_GPIOA_PINS;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	
-	radioSetMode(RADIO_MODE_NORMAL);
-	printf("ITSB: radio initialization OK ! \n");
 }
 	
 
@@ -192,6 +189,26 @@ void radioSetMode(uint8_t mode)
 
 
 
+void radioEnable(bool state)
+{
+	if (state == true) {
+		
+	} else {
+		
+	}
+	
+}
+
+
+void radioInit(void)
+{
+	radioGpioInit();
+	radioEnable(false);
+	delayMs(10);
+	radioSetMode(RADIO_MODE_NORMAL);
+	radioEnable(true);
+	printf("ITSB: radio initialization OK ! \n");
+}
 
 
 
