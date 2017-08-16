@@ -13,7 +13,7 @@ extern node_t myNode;
 extern bool gNetworkRunning;
 extern bool gCanAskForIdTriger;
 extern bool gCanAskForIdDurNormMode;
-
+extern uint16_t gRadioNoDataCnt;
 
 
 uint16_t crc16(uint8_t * buf, uint32_t len);

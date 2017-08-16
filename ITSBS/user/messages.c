@@ -12,7 +12,7 @@
 
 #define MSG_SEND_USART_BYTES(buf, bytes)  usart1SendBuffer(buf, bytes)
 
-
+uint16_t gRadioNoDataCnt = 0;
 
 
 /****************************************************************/
@@ -366,11 +366,13 @@ static void handle_msg_ask_for_data(const message_t *msg)
 	msg_ask_for_data_t message;
 	memcpy(&message, &msg->payload[0], sizeof(message));
 	
+	gRadioNoDataCnt = 0;	//! when received a msg, this value will be reset to 0.
+	gNetworkRunning = true;	//! means the net is in running mode
+	
 	if (message.node_id == 0) {
 		return;	//! there must be something wrong with master, just give no ack
 	}
-	gNetworkRunning = true;	//! means the net is in running mode 
-
+ 
 	if (message.node_id == myNode.node_id) {
 		myNode.bad_cnt = 0;     //! can receive this msg means communication is OK!		
 		msg_ack_for_data_send(myNode.node_id, 25, 0, 11, 22, 33, 44, 55, 66, 77, 88, 99); 

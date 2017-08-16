@@ -48,7 +48,7 @@ int main(void)
 			break;
 		
 		case ITS_MODE_NONE:
-			ledFlashSet(0, 2000, 1000); //! i am rejected!
+			ledFlashSet(0, 2000, 1000); 	//! i am rejected!
 			if (myNode.node_id == 0) {		//! it can come out of the NONE mode and start apply for id again
 				gMode = ITS_MODE_MESH;
 			}
@@ -89,17 +89,22 @@ itsbs_mode_t taskMesh(void)
 		if (myNode.node_id == 0) {
 			if (gNetworkRunning) { //! the network is running normally
 				if (gCanAskForIdDurNormMode) { //! check if it is the free time that can send ask for id msg
-					gCanAskForIdDurNormMode = false;
-					askForIdCnt++; printf("normal mode: ask for id times: %d \n", askForIdCnt);
-					msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);						
+					gCanAskForIdDurNormMode = false; 
+					askForIdCnt++;
+					msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);
+					printf("normal mode: ask for id times: %d \n", askForIdCnt);
+					
+				} else {
+					//! to do
 				}
 				
 			} else { //! network is running mesh, just send ask for id msg under my period
 				msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);						
-				askForIdCnt++; printf("mesh mode: ask for id times: %d \n", askForIdCnt);
+				askForIdCnt++; 
+				printf("mesh mode: ask for id times: %d \n", askForIdCnt);
 			}
 			
-			if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, modify send period as 500ms
+			if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, delay a random time then restart timer
 				delayMs((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*50);
 				timer3Init(200);
 			}
@@ -118,7 +123,7 @@ itsbs_mode_t taskMesh(void)
 			printf("i get my id = %d \n", myNode.node_id);			
 		}
 	}
-
+	//systemReboot();
 	return mode;
 }
 
