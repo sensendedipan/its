@@ -82,8 +82,8 @@ void msg_ask_for_data_send(uint8_t node_id)
 #define MSG_ACK_FOR_DATA_PAYLOAD_LEN 	17
 
 void msg_ack_for_data_send(	uint8_t  node_id, 
-							uint8_t	 dev_type, 
 							int8_t   temperature,
+							uint8_t	 dev_type, 
 							uint8_t	 volt_red,
 							uint8_t  volt_yellow,
 							uint8_t  volt_green,
@@ -375,7 +375,7 @@ static void handle_msg_ask_for_data(const message_t *msg)
  
 	if (message.node_id == myNode.node_id) {
 		myNode.bad_cnt = 0;     //! can receive this msg means communication is OK!		
-		msg_ack_for_data_send(myNode.node_id, 25, 0, 11, 22, 33, 44, 55, 66, 77, 88, 99); 
+		msg_ack_for_data_send(myNode.node_id, 25, 0, 0x11+myNode.node_id, 0x22+myNode.node_id, 0x33+myNode.node_id, 0x44+myNode.node_id, 0x55+myNode.node_id, 0x66+myNode.node_id, 0x77+myNode.node_id, 0x88+myNode.node_id, 0x99+myNode.node_id); 
 		printf("ack for data my id : %d \n", myNode.node_id);
 		ledFlashSet(1, 200, 5);
 		
