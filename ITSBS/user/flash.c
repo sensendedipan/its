@@ -46,7 +46,7 @@ uint16_t getAskForIdPeriod(void)
 			value = 100;
 			
 		} else {
-			value = value*50;
+			value = value*25;
 		} 			
 		
 	} else {

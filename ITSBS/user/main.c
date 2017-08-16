@@ -108,12 +108,12 @@ itsbs_mode_t taskMesh(void)
 			}
 		}			
 			
-		if (askForIdCnt == ASK_FOR_ID_RETRY_MAX/2) {	//! ask for id more than n times, delay a random time then restart timer
-			delayMs((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*50);
+		if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, delay a random time then restart timer
+			delayMs((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*20);
 			timer3Init(200);
 		}
 		
-		if (askForIdCnt >= ASK_FOR_ID_RETRY_MAX) {
+		if (askForIdCnt >= ASK_FOR_ID_RETRY_REBOOT) {
 			systemReboot(); 
 		}
 		
