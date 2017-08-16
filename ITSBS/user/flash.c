@@ -143,6 +143,25 @@ void writeFlashOneWord(uint32_t writeAddr,uint32_t data)
 
 
 
+/**
+*@brief		STM32系统软复位函数
+*@param		无
+*@return	无
+*/
+
+typedef void (*pFunction)(void);
+
+
+void systemReboot(void)
+{
+	pFunction Jump_To_Application;
+	uint32_t JumpAddress;
+	
+	printf(" system is rebooting \n");
+	JumpAddress = *(vu32*) (0x00000004);
+	Jump_To_Application = (pFunction) JumpAddress;
+	Jump_To_Application();
+}
 
 
 
