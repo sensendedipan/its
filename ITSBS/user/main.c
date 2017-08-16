@@ -84,8 +84,8 @@ itsbs_mode_t taskMesh(void)
 	itsbs_mode_t mode = ITS_MODE_MESH;
 	
 	if (myNode.node_id == 0) {
-		if (gNetworkRunning) {	//! the network is running normally
-			if (gCanAskForIdDurNormMode) { //! check if it is the free time that can send ask for id msg
+		if (gNetworkRunning) {				//! the network is running normally
+			if (gCanAskForIdDurNormMode) {	//! check if it is the free time that can send ask for id msg
 				gCanAskForIdDurNormMode = false; 
 				askForIdCnt++;
 				msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);
@@ -95,7 +95,7 @@ itsbs_mode_t taskMesh(void)
 				//! to do 
 			}
 				
-		} else {				//! the network is running mesh
+		} else {							//! the network is running mesh
 			if (gCanAskForIdTriger) {
 				gCanAskForIdTriger = false;	
 			
@@ -108,9 +108,13 @@ itsbs_mode_t taskMesh(void)
 			}
 		}			
 			
-		if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, delay a random time then restart timer
+		if (askForIdCnt == ASK_FOR_ID_RETRY_MAX/2) {	//! ask for id more than n times, delay a random time then restart timer
 			delayMs((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*50);
 			timer3Init(200);
+		}
+		
+		if (askForIdCnt >= ASK_FOR_ID_RETRY_MAX) {
+			systemReboot(); 
 		}
 		
 	} else if (myNode.node_id == 255) { //! rejected my mesh request!!!

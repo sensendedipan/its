@@ -6,7 +6,7 @@
 #include "board.h"
 #include "eeprom.h"
 
-#define ASK_FOR_ID_RETRY_MAX	10	//! if ask for id more than 5 times, then modify send period
+#define ASK_FOR_ID_RETRY_MAX	20	//! if ask for id more than ASK_FOR_ID_RETRY_MAX/2 times, then modify send period; if more than ASK_FOR_ID_RETRY_MAX times, selfcheck or reboot
 
 extern node_t myNode;
 
@@ -27,7 +27,7 @@ void unlockFlash(void);
 void writeFlashOneWord(uint32_t writeAddr,uint32_t data);
 uint32_t readFlashBtyes(uint32_t readAddr, uint8_t *readBuf, uint32_t n);
 
-
+void systemReboot(void);
 
 
 void taskParseRadioData(void);
