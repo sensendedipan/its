@@ -170,7 +170,8 @@ itsbs_mode_t taskMesh(void)
 //			printf("i get my id = %d \n", myNode.node_id);			
 //		}
 //	}
-	//systemReboot();
+
+
 	return mode;
 }
 
