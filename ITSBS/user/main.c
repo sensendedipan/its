@@ -83,46 +83,93 @@ itsbs_mode_t taskMesh(void)
 	static uint8_t askForIdCnt = 0;
 	itsbs_mode_t mode = ITS_MODE_MESH;
 	
-	if (gCanAskForIdTriger) {
-		gCanAskForIdTriger = false;
-		
-		if (myNode.node_id == 0) {
-			if (gNetworkRunning) { //! the network is running normally
-				if (gCanAskForIdDurNormMode) { //! check if it is the free time that can send ask for id msg
-					gCanAskForIdDurNormMode = false; 
-					askForIdCnt++;
-					msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);
-					printf("normal mode: ask for id times: %d \n", askForIdCnt);
-					
-				} else {
-					//! to do
-				}
+	if (myNode.node_id == 0) {
+		if (gNetworkRunning) {	//! the network is running normally
+			if (gCanAskForIdDurNormMode) { //! check if it is the free time that can send ask for id msg
+				gCanAskForIdDurNormMode = false; 
+				askForIdCnt++;
+				msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);
+				printf("normal mode: ask for id times: %d \n", askForIdCnt);
 				
-			} else { //! network is running mesh, just send ask for id msg under my period
-				msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);						
+			} else {
+				//! to do 
+			}
+				
+		} else {				//! the network is running mesh
+			if (gCanAskForIdTriger) {
+				gCanAskForIdTriger = false;	
+			
+				msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);	//! network is running mesh, just send ask for id msg under my period						
 				askForIdCnt++; 
 				printf("mesh mode: ask for id times: %d \n", askForIdCnt);
+				
+			} else {
+				//! to do
 			}
+		}			
 			
-			if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, delay a random time then restart timer
-				delayMs((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*50);
-				timer3Init(200);
-			}
-			
-		} else if (myNode.node_id == 255) { //! rejected my mesh request!!!
-			askForIdCnt = 0;
-			timer3Init(getAskForIdPeriod());	//! just case of had modified the period
-			mode = ITS_MODE_NONE;
-			printf("i am ok but rejected ! \n");	
-			
-		} else { //! get the id succeed !
-			askForIdCnt = 0;
-			myNode.bad_cnt = 0;
-			timer3Init(getAskForIdPeriod()); //! just case of had modified the period
-			mode = ITS_MODE_NORMAL_MISSION;
-			printf("i get my id = %d \n", myNode.node_id);			
+		if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, delay a random time then restart timer
+			delayMs((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*50);
+			timer3Init(200);
 		}
+		
+	} else if (myNode.node_id == 255) { //! rejected my mesh request!!!
+		askForIdCnt = 0;
+		timer3Init(getAskForIdPeriod());	//! just case of had modified the period
+		mode = ITS_MODE_NONE;
+		printf("i am ok but rejected ! \n");	
+		
+	} else { //! get the id succeed !
+		askForIdCnt = 0;
+		myNode.bad_cnt = 0;
+		timer3Init(getAskForIdPeriod()); //! just case of had modified the period
+		mode = ITS_MODE_NORMAL_MISSION;
+		printf("i get my id = %d \n", myNode.node_id);			
 	}
+					
+				
+	
+			
+//	if (gCanAskForIdTriger) {
+//		gCanAskForIdTriger = false;
+//		
+//		if (myNode.node_id == 0) {
+//			if (gNetworkRunning) { //! the network is running normally
+//				if (gCanAskForIdDurNormMode) { //! check if it is the free time that can send ask for id msg
+//					gCanAskForIdDurNormMode = false; 
+//					askForIdCnt++;
+//					msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);
+//					printf("normal mode: ask for id times: %d \n", askForIdCnt);
+//					
+//				} else {
+//					//! to do
+//				}
+//				
+//			} else { //! network is running mesh, just send ask for id msg under my period
+//				msg_ask_for_id_send(myNode.mac[0], myNode.mac[1], myNode.mac[2], 100, 100, 100);						
+//				askForIdCnt++; 
+//				printf("mesh mode: ask for id times: %d \n", askForIdCnt);
+//			}
+//			
+//			if (askForIdCnt == ASK_FOR_ID_RETRY_MAX) {	//! ask for id more than n times, delay a random time then restart timer
+//				delayMs((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*50);
+//				timer3Init(200);
+//			}
+//			
+//		} else if (myNode.node_id == 255) { //! rejected my mesh request!!!
+//			askForIdCnt = 0;
+//			timer3Init(getAskForIdPeriod());	//! just case of had modified the period
+//			mode = ITS_MODE_NONE;
+//			printf("i am ok but rejected ! \n");	
+//			
+//		} else { //! get the id succeed !
+//			askForIdCnt = 0;
+//			myNode.bad_cnt = 0;
+//			timer3Init(getAskForIdPeriod()); //! just case of had modified the period
+//			mode = ITS_MODE_NORMAL_MISSION;
+//			printf("i get my id = %d \n", myNode.node_id);			
+//		}
+//	}
 	//systemReboot();
 	return mode;
 }
