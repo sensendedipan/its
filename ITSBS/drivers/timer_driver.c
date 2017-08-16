@@ -76,7 +76,7 @@ void TIMER2_TIMER_IRQHandler()
 	if (TIM_GetITStatus(TIMER2_TIMER, TIM_IT_Update) != RESET) {   
 		TIM_ClearITPendingBit(TIMER2_TIMER, TIM_IT_Update);
 		
-		if (gRadioNoDataCnt++ == 50) {	//! means have not received data more than 50ms 
+		if (gRadioNoDataCnt++ == (getAnalogValue(0)&0X07)*10/*((myNode.mac[0] + myNode.mac[1] + myNode.mac[2])&0x00000007*15)*/) {	//! means have not received data more than 50ms 
 			gCanAskForIdDurNormMode = true;
 		}
 		
